@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  web:
+    platform: linux/arm64/v8
+    build:
+      context: ./api
+      target: 'develop-stage'
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgres://root:password@db:5432/dev
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+        - ./api:/app
+        - cargo-cache:/usr/local/cargo/registry
+        - target-cache:/app/target
+    command: /bin/sh -c "cargo watch -x run"
+  db:
+    image: postgres:16.1
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=dev
+    healthcheck:
+      test: pg_isready -U root -d dev || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  cargo-cache:
+  target-cache:
