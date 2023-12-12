@@ -10,6 +10,7 @@ services:
     environment:
       - PORT=8080
       - DATABASE_URL=postgres://root:password@db:5432/dev
+      - ALLOWED_ORIGINS=*
     depends_on:
       db:
         condition: service_healthy
