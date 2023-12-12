@@ -1,6 +1,6 @@
 FROM rust:1.74 as develop-stage
 WORKDIR /app
-RUN cargo install cargo-watch
+RUN cargo install cargo-watch sqlx-cli
 COPY .. .
 
 FROM develop-stage as build-stage

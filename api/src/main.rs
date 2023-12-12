@@ -1,11 +1,13 @@
 use std::env;
 use std::net::SocketAddr;
 
+use actix_cors::Cors;
 use actix_web::{App, guard, HttpResponse, HttpServer, Result, web};
 use actix_web::web::Data;
 use async_graphql::{EmptyMutation, EmptySubscription, Object, Schema};
 use async_graphql::http::{GraphQLPlaygroundConfig, playground_source};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
+use sqlx::postgres::PgPoolOptions;
 
 struct Query;
 
@@ -33,20 +35,36 @@ async fn index_playground() -> Result<HttpResponse> {
 async fn main() -> std::io::Result<()> {
     let schema = Schema::build(Query, EmptyMutation, EmptySubscription).finish();
 
-    let addr = SocketAddr::from(([0, 0, 0, 0],
-                                 fetch_env_var("PORT", Some(8080))));
+    let addr = SocketAddr::from(([0, 0, 0, 0], fetch_env_var("PORT", Some(8080))));
     println!("Playground: http://{}", addr);
-    let db_url = fetch_env_var("DATABASE_URL", Some("postgres://root:postgres@localhost:5432/dev".to_string()));
+    let db_url = fetch_env_var(
+        "DATABASE_URL",
+        Some("postgres://root:postgres@localhost:5432/dev".to_string()),
+    );
+
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(&db_url)
+        .await
+        .unwrap();
+
+    sqlx::migrate!()
+        .run(&pool)
+        .await
+        .expect("Migration failed.");
+
     println!("Database: {}", db_url);
     let allowed_origins: Vec<String> = fetch_env_var("ALLOWED_ORIGINS", Some("*".to_string()))
         .split(',')
         .map(|s| s.to_string())
         .collect();
     println!("Allowed origins: {:?}", allowed_origins);
-
+    let cors = Cors::permissive();
+    println!("CORS: {:?}", cors);
 
     HttpServer::new(move || {
         App::new()
+            // .wrap(cors)
             .app_data(Data::new(schema.clone()))
             .service(web::resource("/").guard(guard::Post()).to(index))
             .service(web::resource("/").guard(guard::Get()).to(index_playground))
@@ -57,15 +75,14 @@ async fn main() -> std::io::Result<()> {
         .await
 }
 
-fn fetch_env_var<T: std::str::FromStr>(
-    var_name: &str,
-    default: Option<T>,
-) -> T
+fn fetch_env_var<T: std::str::FromStr>(var_name: &str, default: Option<T>) -> T
     where
         T: std::fmt::Debug,
 {
     match env::var(var_name) {
-        Ok(s) => s.parse().unwrap_or_else(|_| panic!("Failed to parse {}: {:?}", var_name, s)),
+        Ok(s) => s
+            .parse()
+            .unwrap_or_else(|_| panic!("Failed to parse {}: {:?}", var_name, s)),
         Err(env::VarError::NotPresent) => {
             if let Some(default_value) = default {
                 default_value
@@ -73,6 +90,8 @@ fn fetch_env_var<T: std::str::FromStr>(
                 panic!("Environment variable {} is required.", var_name);
             }
         }
-        Err(env::VarError::NotUnicode(_)) => panic!("Environment variable {} is not unicode.", var_name),
+        Err(env::VarError::NotUnicode(_)) => {
+            panic!("Environment variable {} is not unicode.", var_name)
+        }
     }
 }
