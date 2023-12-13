@@ -2,7 +2,7 @@ use std::env;
 use std::net::SocketAddr;
 
 use actix_cors::Cors;
-use actix_web::{App, guard, HttpResponse, HttpServer, Result, web};
+use actix_web::{App, guard, http, HttpResponse, HttpServer, Result, web};
 use actix_web::web::Data;
 use async_graphql::{EmptyMutation, EmptySubscription, Object, Schema};
 use async_graphql::http::{GraphQLPlaygroundConfig, playground_source};
@@ -54,17 +54,17 @@ async fn main() -> std::io::Result<()> {
         .expect("Migration failed.");
 
     println!("Database: {}", db_url);
-    let allowed_origins: Vec<String> = fetch_env_var("ALLOWED_ORIGINS", Some("*".to_string()))
-        .split(',')
-        .map(|s| s.to_string())
-        .collect();
-    println!("Allowed origins: {:?}", allowed_origins);
-    let cors = Cors::permissive();
-    println!("CORS: {:?}", cors);
 
     HttpServer::new(move || {
+        let cors = Cors::default()
+            .allow_any_origin()
+            .send_wildcard()
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
         App::new()
-            // .wrap(cors)
+            .wrap(cors)
             .app_data(Data::new(schema.clone()))
             .service(web::resource("/").guard(guard::Post()).to(index))
             .service(web::resource("/").guard(guard::Get()).to(index_playground))
