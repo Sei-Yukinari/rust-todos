@@ -40,7 +40,7 @@ impl Query {
 
 type ApiSchema = Schema<Query, EmptyMutation, EmptySubscription>;
 
-async fn index(schema: web::Data<ApiSchema>, req: GraphQLRequest) -> GraphQLResponse {
+async fn index(schema: Data<ApiSchema>, req: GraphQLRequest) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
 }
 

@@ -22,7 +22,7 @@ impl<QUC> Query<QUC>
     where
         QUC: QueryUseCase,
 {
-    async fn logged_in_user(&self, ctx: &Context<'_>) -> Result<Option<User>, PresentationalError> {
+    async fn logged_in_user(&self) -> Result<Option<User>, PresentationalError> {
         let user = self.query_use_case.find_user_by_id(1).await?;
         Ok(user.map(|user| User::new(user)))
     }

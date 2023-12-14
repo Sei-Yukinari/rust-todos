@@ -2,9 +2,9 @@ use std::env;
 use std::net::SocketAddr;
 
 use actix_web::HttpServer;
-use sqlx::postgres::PgPoolOptions;
 
 use api::create_app;
+use api::infrastructure::db::postgres::{db_migrate, db_pool};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -14,19 +14,8 @@ async fn main() -> std::io::Result<()> {
         .expect("PORT must be a number")));
     println!("Playground: http://{}", addr);
 
-    let db_url = env::var("DATABASE_URL")
-        .expect("DATABASE_URL must be set.");
-
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&db_url)
-        .await
-        .unwrap();
-
-    sqlx::migrate!()
-        .run(&pool)
-        .await
-        .expect("Migration failed.");
+    let pool = db_pool().await;
+    db_migrate(&pool).await;
 
     HttpServer::new(move || {
         create_app::create_app(pool.clone())
