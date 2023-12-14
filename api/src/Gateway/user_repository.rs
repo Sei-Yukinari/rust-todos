@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use sqlx::{PgConnection, PgPool};
 
 use crate::domain::{
-    entity::user::{User, UserId},
+    entity::user::{User},
     error::DomainError,
     repository::user_repository::UserRepository,
 };
@@ -33,7 +33,7 @@ impl UserRepository for PgUserRepository {
     }
 }
 
-pub(in crate::infrastructure) struct InternalUserRepository {}
+pub(in crate::gateway) struct InternalUserRepository {}
 
 impl InternalUserRepository {
     async fn find_by_id(id: i64, conn: &mut PgConnection) -> Result<Option<User>, DomainError> {

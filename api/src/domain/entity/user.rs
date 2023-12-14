@@ -1,8 +1,5 @@
 use validator::Validate;
-use crate::infrastructure::user_repository::UserRow;
-use crate::use_case::dto::user::UserDto;
-
-// use crate::{domain::error::DomainError, impl_string_value_object};
+use crate::gateway::user_repository::UserRow;
 
 #[derive(Debug, Clone, PartialEq, Eq, Validate)]
 pub struct UserId {

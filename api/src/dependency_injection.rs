@@ -2,7 +2,7 @@ use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use sqlx::{Pool, Postgres};
 
 use crate::{
-    infrastructure::{
+    gateway::{
         user_repository::PgUserRepository,
     },
     presentation::graphql::{query::Query, schema::build_schema},

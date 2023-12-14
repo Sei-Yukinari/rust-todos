@@ -30,8 +30,9 @@ impl From<DomainError> for UseCaseError {
                 entity_type,
                 entity_id,
                 user_id,
+
             },
-            DomainError::InfrastructureError(_) => UseCaseError::Other(anyhow::Error::new(err)),
+            DomainError::GatewayError(_) => UseCaseError::Other(anyhow::Error::new(err)),
             DomainError::Unexpected(message) => UseCaseError::Unexpected(message),
         }
     }

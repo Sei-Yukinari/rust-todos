@@ -12,7 +12,7 @@ pub enum DomainError {
         user_id: String,
     },
     #[error(transparent)]
-    InfrastructureError(anyhow::Error),
+    GatewayError(anyhow::Error),
     #[error("{0}")]
     Unexpected(String),
 }
