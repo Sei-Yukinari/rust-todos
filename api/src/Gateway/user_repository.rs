@@ -7,7 +7,7 @@ use crate::domain::{
     repository::user_repository::UserRepository,
 };
 
-#[derive(Debug, sqlx::FromRow)]
+#[derive(Debug, Clone, sqlx::FromRow)]
 pub struct UserRow {
     pub(crate) id: i64,
     pub(crate) name: String,
