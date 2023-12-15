@@ -19,13 +19,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Rust
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          export PATH="$HOME/.cargo/bin:$PATH"
-          rustup default stable
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          override: true
 
-      - name: Build and test project
-        run: |
-          cargo build --release
-          cargo test
+      - name: Build project
+        run: cargo build --release
+
+      - name: Run tests
+        run: cargo test
