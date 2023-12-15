@@ -45,3 +45,44 @@ impl InternalUserRepository {
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use mockall::predicate::*;
+    use crate::domain::repository::user_repository::MockUserRepository;
+    #[tokio::test]
+    async fn find_by_id_returns_user_when_exists() {
+        let mut mock = MockUserRepository::new();
+        let expected_user = User::new(
+            UserRow {
+                id: 1,
+                name: "Test User".to_string(),
+            }
+        );
+        let expected_user_clone = expected_user.clone();
+
+        mock.expect_find_by_id()
+            .with(eq(1))
+            .times(1)
+            .return_once(move |_| Ok(Some(expected_user_clone)));
+
+        let user = mock.find_by_id(1).await.unwrap().unwrap();
+
+        assert_eq!(user, expected_user);
+    }
+
+    #[tokio::test]
+    async fn find_by_id_returns_none_when_not_exists() {
+        let mut mock = MockUserRepository::new();
+
+        mock.expect_find_by_id()
+            .with(eq(2))
+            .times(1)
+            .returning(|_| Ok(None));
+
+        let user = mock.find_by_id(2).await.unwrap();
+
+        assert!(user.is_none());
+    }
+}
