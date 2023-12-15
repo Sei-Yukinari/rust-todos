@@ -27,6 +27,5 @@ jobs:
 
       - name: Build and test project
         run: |
-          cd api
           cargo build --release
           cargo test
