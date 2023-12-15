@@ -13,19 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: api
+        working-directory: ./api
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Rust
-        uses: actions/setup-rust@v1
-        with:
-          rust-version: stable
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustup default stable
 
-      - name: Build project
-        run: cargo build --release
-
-      - name: Run tests
-        run: cargo test
+      - name: Build and test project
+        run: |
+          cd api
+          cargo build --release
+          cargo test
