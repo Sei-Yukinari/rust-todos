@@ -28,3 +28,9 @@ logs: ## Show Container log Selected Environment
 
 exec: ## Enter Container Selected Environment
 	@docker-compose -f ./docker-compose.yml exec $(RUN_ARGS) bash
+
+gen: ## Generate GraphQL Schema
+	@docker-compose -f ./docker-compose.yml exec web cargo run --bin generate-schema
+
+test: ## run unit test
+	@docker-compose -f ./docker-compose.yml exec web cargo test
