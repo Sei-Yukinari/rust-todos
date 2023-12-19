@@ -1,0 +1,17 @@
+
+
+
+
+type Query {
+	loggedInUser: User
+}
+
+
+type User {
+	id: ID!
+	name: String!
+}
+
+schema {
+	query: Query
+}

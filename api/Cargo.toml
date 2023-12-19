@@ -2,6 +2,7 @@
 edition = "2021"
 name = "api"
 version = "0.1.0"
+default-run = "api"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -19,4 +20,4 @@ validator = { version = "0.16.1", features = ["derive"] }
 thiserror = "1.0.50"
 anyhow = { version = "1.0.75", features = ["backtrace"] }
 env_logger = "0.10.1"
-tokio = { version = "1.35.0", features = ["macros"] }
+tokio = { version = "1.35.0", features = ["full"] }
