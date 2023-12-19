@@ -30,3 +30,11 @@ $ make gen
 ```shell
 $ make test
 ```
+
+### DB
+```shell
+$ make exec web
+## enter container
+$ sqlx migtate add <name>
+$ sqlx migtate run
+```
