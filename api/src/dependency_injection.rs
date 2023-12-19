@@ -16,13 +16,13 @@ pub type QI = QueryInteractor<PgUserRepository>;
 pub fn dependency_injection(
     pool: Pool<Postgres>,
 ) -> ( Schema<Query<QI>, EmptyMutation, EmptySubscription>) {
-    let user_repository = PgUserRepository::new(pool.clone());
+    let user_repository = PgUserRepository::new(pool);
 
     let query_use_case = QueryInteractor {
-        user_repository: user_repository.clone(),
+        user_repository,
     };
 
-    let query = Query::new(query_use_case.clone());
+    let query = Query::new(query_use_case);
 
     build_schema(query)
 }

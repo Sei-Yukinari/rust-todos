@@ -23,8 +23,7 @@ pub fn create_app(pool: Pool<Postgres>) -> App<
 
     App::new()
         .wrap(Logger::default())
-        // .app_data(Data::new(schema.clone()))
-        .service(web::resource("/").guard(guard::Post()).to(GraphQL::new(schema.clone())))
+        .service(web::resource("/").guard(guard::Post()).to(GraphQL::new(schema)))
         .service(web::resource("/").guard(guard::Get()).to(index_playground))
         .route("/healthz", web::get().to(|| HttpResponse::Ok()))
 }

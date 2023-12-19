@@ -67,9 +67,9 @@ mod tests {
             .times(1)
             .return_once(move |_| Ok(Some(expected_user_clone)));
 
-        let user = mock.find_by_id(1).await.unwrap().unwrap();
+        let user = mock.find_by_id(1).await.unwrap();
 
-        assert_eq!(user, expected_user);
+        assert_eq!(user, Some(expected_user));
     }
 
     #[tokio::test]
