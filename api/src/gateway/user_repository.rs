@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use sqlx::{PgConnection, PgPool};
 
 use crate::domain::{
-    entity::user::{User},
+    entity::user::User,
     error::DomainError,
     repository::user_repository::UserRepository,
 };

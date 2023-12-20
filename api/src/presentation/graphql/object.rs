@@ -1,9 +1,10 @@
 use async_graphql::{ID, SimpleObject};
+
 use crate::use_case::dto::user::UserDto;
 
 #[derive(SimpleObject)]
 pub struct User {
-    id: ID,
+    pub(crate) id: ID,
     name: String,
 }
 

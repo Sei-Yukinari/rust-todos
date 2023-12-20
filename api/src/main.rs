@@ -12,15 +12,20 @@ async fn main() -> std::io::Result<()> {
         .unwrap_or_else(|_| "8080".to_string())
         .parse()
         .expect("PORT must be a number")));
-    println!("Playground: http://{}", addr);
+
 
     let pool = db_pool().await;
     db_migrate(&pool).await;
 
-    HttpServer::new(move || {
+    let server = HttpServer::new(move || {
         create_app::create_app(pool.clone())
     })
-        .bind(addr)?
-        .run()
-        .await
+        .bind(addr);
+
+    println!("Playground: http://{}", addr);
+    // サーバーを起動
+
+    server.expect("server cannot run ").run().await?;
+    Ok(())
+
 }

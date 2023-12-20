@@ -2,6 +2,9 @@
 
 
 
+type Mutation {
+}
+
 type Query {
 	loggedInUser: User
 }
@@ -14,4 +17,5 @@ type User {
 
 schema {
 	query: Query
+	mutation: Mutation
 }

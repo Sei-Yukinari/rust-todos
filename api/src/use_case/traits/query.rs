@@ -8,6 +8,6 @@ use crate::use_case::{
 
 #[automock]
 #[async_trait]
-pub trait QueryUseCase: Send + Sync + 'static {
+pub trait QueryUseCase: Send + Sync {
     async fn find_user_by_id(&self, user_id: i64) -> Result<Option<UserDto>, UseCaseError>;
 }

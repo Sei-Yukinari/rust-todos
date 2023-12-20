@@ -1,10 +1,7 @@
 use async_trait::async_trait;
 
 use crate::{
-    domain::{
-        entity::user::UserId,
-        repository::user_repository::UserRepository,
-    },
+    domain::repository::user_repository::UserRepository,
     use_case::{
         dto::user::UserDto,
         error::UseCaseError,
@@ -13,14 +10,14 @@ use crate::{
 };
 
 #[derive(Debug, Clone)]
-pub struct QueryInteractor<UR> {
-    pub user_repository: UR,
+pub struct QueryInteractor<U> {
+    pub user_repository: U,
 }
 
 #[async_trait]
-impl<UR> QueryUseCase for QueryInteractor<UR>
+impl<U> QueryUseCase for QueryInteractor<U>
     where
-        UR: UserRepository,
+        U: UserRepository,
 {
     async fn find_user_by_id(&self, raw_user_id: i64) -> Result<Option<UserDto>, UseCaseError> {
         let user = self.user_repository.find_by_id(raw_user_id).await?;

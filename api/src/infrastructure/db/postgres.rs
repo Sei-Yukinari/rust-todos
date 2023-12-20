@@ -1,7 +1,7 @@
 use std::env;
+
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
-
 
 pub async fn db_pool() -> PgPool {
     let db_url = env::var("DATABASE_URL")

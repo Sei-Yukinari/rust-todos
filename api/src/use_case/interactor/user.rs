@@ -1,12 +1,11 @@
 use async_trait::async_trait;
 
 use crate::{
-    domain::{
-        repository::user_repository::UserRepository,
-    },
-    use_case::{traits::user::RegisterUserUseCase},
+    domain::repository::user_repository::UserRepository,
+    use_case::traits::user::RegisterUserUseCase,
 };
 
+#[warn(dead_code)]
 pub struct RegisterUserInteractor<UR> {
     user_repository: UR,
 }

@@ -1,14 +1,14 @@
 use actix_web::{App, guard, HttpResponse, Result, web};
-use actix_web::Error;
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
-use actix_web::web::Data;
+use actix_web::Error;
 use actix_web::middleware::Logger;
-use async_graphql::{EmptyMutation, EmptySubscription, Object, Schema};
 use async_graphql::http::{GraphQLPlaygroundConfig, playground_source};
-use async_graphql_actix_web::{GraphQL, GraphQLRequest, GraphQLResponse};
+use async_graphql_actix_web::GraphQL;
 use sqlx::{Pool, Postgres};
-use crate::dependency_injection::dependency_injection;
+
+use crate::context::Context;
+use crate::schema::{create_schema, GraphQLSchema};
 
 pub fn create_app(pool: Pool<Postgres>) -> App<
     impl ServiceFactory<
@@ -19,28 +19,19 @@ pub fn create_app(pool: Pool<Postgres>) -> App<
         Error=Error,
     >,
 > {
-    let schema = dependency_injection(pool);
+    let ctx = Context::new(pool);
+    let schema = create_schema(ctx);
+
 
     App::new()
         .wrap(Logger::default())
-        .service(web::resource("/").guard(guard::Post()).to(GraphQL::new(schema)))
+        .service(web::resource("/").guard(guard::Post()).to(index(schema)))
         .service(web::resource("/").guard(guard::Get()).to(index_playground))
         .route("/healthz", web::get().to(|| HttpResponse::Ok()))
 }
 
-struct Query;
-
-#[Object]
-impl Query {
-    async fn test(&self) -> usize {
-        12345
-    }
-}
-
-type ApiSchema = Schema<Query, EmptyMutation, EmptySubscription>;
-
-async fn index(schema: Data<ApiSchema>, req: GraphQLRequest) -> GraphQLResponse {
-    schema.execute(req.into_inner()).await.into()
+fn index(schema: GraphQLSchema) -> GraphQL<GraphQLSchema> {
+    GraphQL::new(schema)
 }
 
 async fn index_playground() -> Result<HttpResponse> {

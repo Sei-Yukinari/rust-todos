@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use mockall::automock;
 
 use crate::domain::{
-    entity::user::{User, UserId},
+    entity::user::User,
     error::DomainError,
 };
 
