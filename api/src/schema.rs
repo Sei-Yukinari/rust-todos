@@ -1,13 +1,6 @@
 use async_graphql::{EmptyMutation, EmptySubscription, MergedObject, Schema};
-
-use crate::{
-    gateway::user_repository::PgUserRepository,
-    use_case::interactor::query::QueryInteractor,
-};
 use crate::context::Context;
 use crate::graphql::resolver::user_resolver::UsersQuery;
-
-pub type QI = QueryInteractor<PgUserRepository>;
 
 #[derive(MergedObject, Default)]
 pub struct Query(UsersQuery);

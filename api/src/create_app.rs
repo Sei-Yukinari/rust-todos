@@ -22,7 +22,6 @@ pub fn create_app(pool: Pool<Postgres>) -> App<
     let ctx = Context::new(pool);
     let schema = create_schema(ctx);
 
-
     App::new()
         .wrap(Logger::default())
         .service(web::resource("/").guard(guard::Post()).to(index(schema)))

@@ -5,14 +5,15 @@ use crate::{
     use_case::traits::user::RegisterUserUseCase,
 };
 
-#[warn(dead_code)]
 pub struct RegisterUserInteractor<UR> {
-    user_repository: UR,
+    pub user_repository: UR,
 }
 
 impl<UR> RegisterUserInteractor<UR> {
     pub fn new(user_repository: UR) -> Self {
-        Self { user_repository }
+        Self {
+            user_repository
+        }
     }
 }
 

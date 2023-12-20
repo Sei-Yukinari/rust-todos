@@ -20,7 +20,9 @@ pub struct PgUserRepository {
 
 impl PgUserRepository {
     pub fn new(pool: PgPool) -> Self {
-        Self { pool }
+        Self {
+            pool
+        }
     }
 }
 
@@ -38,7 +40,7 @@ pub(in crate::gateway) struct InternalUserRepository {}
 impl InternalUserRepository {
     async fn find_by_id(id: i64, conn: &mut PgConnection) -> Result<Option<User>, DomainError> {
         let row: Option<UserRow> = sqlx::query_as("SELECT * FROM users WHERE id = $1")
-            .bind(1)
+            .bind(id)
             .fetch_optional(conn)
             .await?;
         Ok(row.map(|row| User::new(row)))
@@ -51,6 +53,7 @@ mod tests {
     use super::*;
     use mockall::predicate::*;
     use crate::domain::repository::user_repository::MockUserRepository;
+
     #[tokio::test]
     async fn find_by_id_returns_user_when_exists() {
         let mut mock = MockUserRepository::new();
