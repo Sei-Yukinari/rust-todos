@@ -1,9 +1,10 @@
 use async_graphql::{Context, Object, Result};
 
 use crate::{
-    presentation::graphql::object::User,
-    use_case::traits::query::QueryUseCase,
+    presentation::graphql::user::User,
 };
+use crate::use_case::traits::user::UserUseCase;
+
 
 #[derive(Default)]
 pub struct UsersQuery {}
@@ -13,7 +14,7 @@ impl UsersQuery {
     async fn logged_in_user(&self, ctx: &Context<'_>) -> Result<Option<User>> {
         let usecase = &ctx
             .data_unchecked::<crate::context::Context>()
-            .query_use_case;
+            .user_use_case;
         let user = usecase
             .find_user_by_id(1)
             .await?
