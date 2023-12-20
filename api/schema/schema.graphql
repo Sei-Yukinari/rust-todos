@@ -6,7 +6,7 @@ type Mutation {
 }
 
 type Query {
-	loggedInUser: User
+	loggedInUser(id: Int!): User
 }
 
 

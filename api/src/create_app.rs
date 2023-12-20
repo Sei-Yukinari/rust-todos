@@ -1,4 +1,5 @@
 use std::sync::Arc;
+
 use actix_web::{App, guard, HttpResponse, Result, web};
 use actix_web::body::MessageBody;
 use actix_web::dev::{ServiceFactory, ServiceRequest, ServiceResponse};
@@ -20,7 +21,7 @@ pub fn create_app(pool: Pool<Postgres>) -> App<
         Error=Error,
     >,
 > {
-    let ctx =  Arc::new(Context::new(pool));
+    let ctx = Arc::new(Context::new(pool));
     let schema = create_schema(ctx);
 
     App::new()
