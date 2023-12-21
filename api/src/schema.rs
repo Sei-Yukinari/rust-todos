@@ -1,13 +1,15 @@
 use std::sync::Arc;
-use async_graphql::{EmptyMutation, EmptySubscription, MergedObject, Schema};
+
+use async_graphql::{EmptySubscription, MergedObject, Schema};
+
 use crate::context::Context;
-use crate::graphql::resolver::user_resolver::UsersQuery;
+use crate::graphql::resolver::user_resolver::{UsersMutation, UsersQuery};
 
 #[derive(MergedObject, Default)]
 pub struct Query(UsersQuery);
 
 #[derive(MergedObject, Default)]
-pub struct Mutation(EmptyMutation);
+pub struct Mutation(UsersMutation);
 
 pub type GraphQLSchema = Schema<Query, Mutation, EmptySubscription>;
 

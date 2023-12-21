@@ -1,8 +1,16 @@
 
+input CreateUserInput {
+	"""
+	The User's profile
+	"""
+	name: String!
+}
+
 
 
 
 type Mutation {
+	registerUser(input: CreateUserInput!): User
 }
 
 type Query {

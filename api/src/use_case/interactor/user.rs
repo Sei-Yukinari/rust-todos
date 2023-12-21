@@ -29,4 +29,9 @@ impl<U> UserUseCase for Interactor<U>
         let user = self.user_repository.find_by_id(raw_user_id).await?;
         Ok(user.map(|user| UserDto::new(user)))
     }
+
+    async fn create(&self, name: String) -> Result<Option<UserDto>, UseCaseError> {
+        let user = self.user_repository.create(name).await?;
+        Ok(user.map(|user| UserDto::new(user)))
+    }
 }
