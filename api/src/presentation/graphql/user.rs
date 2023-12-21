@@ -12,7 +12,7 @@ impl User {
     pub fn new(user: UserDto) -> Self {
         Self {
             id: user.id.to_string().into(),
-            name: user.name.to_string().into(),
+            name: user.name.to_string(),
         }
     }
 }

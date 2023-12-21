@@ -27,11 +27,11 @@ impl<U> UserUseCase for Interactor<U>
 {
     async fn find_user_by_id(&self, raw_user_id: i64) -> Result<Option<UserDto>, UseCaseError> {
         let user = self.user_repository.find_by_id(raw_user_id).await?;
-        Ok(user.map(|user| UserDto::new(user)))
+        Ok(user.map(UserDto::new))
     }
 
     async fn create(&self, name: String) -> Result<Option<UserDto>, UseCaseError> {
         let user = self.user_repository.create(name).await?;
-        Ok(user.map(|user| UserDto::new(user)))
+        Ok(user.map(UserDto::new))
     }
 }

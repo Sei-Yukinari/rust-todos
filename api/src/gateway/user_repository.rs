@@ -49,7 +49,7 @@ impl InternalUserRepository {
             .bind(id)
             .fetch_optional(conn)
             .await?;
-        Ok(row.map(|row| User::new(row)))
+        Ok(row.map(User::new))
     }
 
     async fn create(name: String, conn: &mut PgConnection) -> Result<Option<User>, DomainError> {
@@ -58,7 +58,7 @@ impl InternalUserRepository {
             .bind(name)
             .fetch_optional(conn)
             .await?;
-        Ok(row.map(|row| User::new(row)))
+        Ok(row.map(User::new))
     }
 }
 

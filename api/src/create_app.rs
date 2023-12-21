@@ -28,7 +28,7 @@ pub fn create_app(pool: Pool<Postgres>) -> App<
         .wrap(Logger::default())
         .service(web::resource("/").guard(guard::Post()).to(index(schema)))
         .service(web::resource("/").guard(guard::Get()).to(index_playground))
-        .route("/healthz", web::get().to(|| HttpResponse::Ok()))
+        .route("/healthz", web::get().to(HttpResponse::Ok))
 }
 
 fn index(schema: GraphQLSchema) -> GraphQL<GraphQLSchema> {

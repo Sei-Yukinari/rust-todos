@@ -7,12 +7,11 @@ pub async fn db_pool() -> PgPool {
     let db_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set.");
 
-    let pool = PgPoolOptions::new()
+    PgPoolOptions::new()
         .max_connections(5)
         .connect(&db_url)
         .await
-        .expect("Failed to create pool");
-    pool
+        .expect("Failed to create pool")
 }
 
 pub async fn db_migrate(pool: &PgPool) {
